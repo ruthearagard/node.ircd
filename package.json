@@ -1,0 +1,30 @@
+{
+  "name": "node.ircd",
+  "version": "1.0.0",
+  "description": "node.js IRCd (Internet Relay Chat daemon)",
+  "main": "bin/main.js",
+  "bin": {
+    "node.ircd": "main.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ruthearagard/node.ircd.git"
+  },
+  "keywords": [
+    "irc",
+    "ircd"
+  ],
+  "author": "Michael Rodriguez",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ruthearagard/node.ircd/issues"
+  },
+  "homepage": "https://github.com/ruthearagard/node.ircd#readme",
+  "dependencies": {
+    "commander": "^6.0.0",
+    "winston": "^3.3.3"
+  }
+}
