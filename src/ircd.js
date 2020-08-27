@@ -18,13 +18,14 @@
 const NetworkHandler = require("./network");
 
 const User = require('./user');
+const logger = require("./logger");
 
 class IRCd
 {
     #network;
     #users = [];
     
-    constructor(config_file)
+    constructor()
     {
         this.#network = NetworkHandler();
         this.#network.add_listener('127.0.0.1', 6667);
@@ -33,6 +34,16 @@ class IRCd
         {
             this.#users.push(new User(socket));
         });
+
+        this.#network.on('client_disconnected', (socket) =>
+        {
+            ;
+        });
+
+        this.#network.on('command_received', (data) =>
+        {
+            ;
+        })
     }
 }
 

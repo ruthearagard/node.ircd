@@ -32,15 +32,68 @@ class NetworkHandler extends events.EventEmitter
 
         this.#instance = net.createServer((socket) =>
         {
+            // We of course, only want to ever read lines from the client.
             const rl = readline.createInterface(socket);
 
             rl.on('line', (line) =>
             {
-                logger.debug(line);
+                // Ensure that we're only working with true plain text
+                // (no whitespace, no terminator characters etc.)
+                line = line.trim();
+
+                // An incoming IRC client message is essentially defined as
+                // this:
+                //
+                // COMMAND param1 param2 :everything here is param3
+
+                // First, check to see if the delimiter (:) is present.
+                const delimiter_index = line.indexOf(":");
+
+                let cmd = "";
+                let args = [];
+
+                // Delimiter not present.
+                if (delimiter_index === -1)
+                {
+                    let irc_string = line.split(' ');
+
+                    // We want to remove the command from the array, know what
+                    // it is, and preserve everything else.
+                    cmd  = irc_string.shift();
+                    args = irc_string;
+                }
+                else
+                {
+                    // Delimiter present.
+
+                    // We want everything AFTER where the delimiter is.
+                    const str    = line.slice(delimiter_index + 1);
+                    const params = line.slice(0, delimiter_index - 1);
+
+                    let irc_string = params.split(' ');
+                    irc_string.push(str);
+
+                    // We want to remove the command from the array, know what
+                    // it is, and preserve everything else.
+                    cmd  = irc_string.shift();
+                    args = irc_string;
+                }
+
+                this.emit('command_received',
+                {
+                    socket: socket,
+                    command: cmd.toUpperCase(),
+                    params: args
+                });
             });
 
             logger.debug(`Client connected (ip=${socket.remoteAddress})`);
             this.emit('client_connected', socket);
+
+            socket.on('close', () =>
+            {
+                this.emit('client_disconnected', socket);
+            });
         });
     }
 

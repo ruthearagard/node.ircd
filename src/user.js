@@ -28,11 +28,6 @@ class User
     constructor(socket)
     {
         this.#socket = socket;
-
-        socket.on('close', () =>
-        {
-            logger.debug(`Client disconnected`);
-        })
     }
 
     // Returns `true` if a user is registered, or `false` otherwise.
